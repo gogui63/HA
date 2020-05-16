@@ -1,0 +1,33 @@
+- name: Normal
+  icon: "mdi:flower-tulip"
+  entities:
+    light.lustre_salle_a_manger: off
+    light.lustre_salon: off
+    light.lampadaire: 
+      state: on
+      color_temp: 250
+      brightness: 255
+    light.trilampe_centre: 
+      state: on
+      color_temp: 250
+      brightness: 255
+    switch.light_lampe_tele_salon: on
+    light.bandeau_led: 
+      state: on
+      color_temp: 250
+      brightness: 120
+    light.trilampe_droite:
+      state: on
+      brightness: 180
+      rgb_color: [255,255,255]
+    light.trilampe_gauche:
+      state: on
+      brightness: 180
+      rgb_color: [255,255,255]
+      
+      
+- name: gautier
+  entities:
+    light.bandeau_lit:
+      state: on
+      brightness: 250
