@@ -1,0 +1,29 @@
+platform: template
+switches:
+  mode_jour:
+    value_template: >
+      {{ is_state('input_boolean.is_jour', 'on') }}
+    turn_on:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.is_jour
+    turn_off:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.is_jour
+  wc_motion_detection:
+    value_template: >
+      {{ is_state('input_boolean.wc_motion_detection', 'on') }}
+    turn_on:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.wc_motion_detection
+    turn_off:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.wc_motion_detection
+  presence:
+    value_template: >
+      {{ is_state('input_boolean.presence', 'on') }}
+    turn_on:
+      - service: input_boolean.turn_on
+        entity_id: input_boolean.presence
+    turn_off:
+      - service: input_boolean.turn_off
+        entity_id: input_boolean.presence

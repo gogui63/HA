@@ -1,0 +1,10 @@
+is_jour:
+  name: Mode Jour
+  initial: on
+  icon: mdi:weather-sunny
+wc_motion_detection:
+  name: WC Motion Detection
+  initial: off
+presence:
+  name: Présence
+  initial: on

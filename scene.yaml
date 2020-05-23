@@ -28,6 +28,6 @@
       
 - name: gautier
   entities:
-    light.bandeau_lit:
+    light.hue_go:
       state: on
       brightness: 250

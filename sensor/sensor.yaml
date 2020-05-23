@@ -1,0 +1,57 @@
+- platform: linky_custom
+  username: !secret mail_gautier 
+  password: !secret linky_password
+  peak_hours:
+    - ["01:00", "07:30"]
+    - ["13:00", "14:30"]
+  peak_hours_cost: 0.1420
+  offpeak_hours_cost: 0.1420
+- platform: spotify-playlist-sensor
+  client_id: !secret spotify_client_id_2
+  client_secret: !secret spotify_client_secret_2
+- platform: mitemp_bt
+  rounding: True
+  decimals: 1
+  period: 300
+  log_spikes: False
+  use_median: True
+  active_scan: False
+  hci_interface: 1
+- platform: time_date
+  display_options:
+    - 'time'
+    - 'date'
+    - 'date_time'
+    - 'time_date'
+- platform: google_travel_time
+  scan_interval: 1200
+  api_key: !secret google_api_key
+  origin: 'Appart'
+  destination: 'Travail Gautier'
+  options:
+    language: fr
+- platform: darksky
+  api_key: !secret dark_sky_api_key
+  scan_interval: 1200
+  language: 'fr'
+  forecast:
+    - 0
+  monitored_conditions:
+    - summary
+    - precip_probability
+    - apparent_temperature_high
+    - apparent_temperature_low
+- platform: template
+  sensors:
+    nextsunrise:
+      entity_id: sun.sun
+      friendly_name: 'Next Sunrise'
+      value_template: >
+        {{ as_timestamp(states.sun.sun.attributes.next_rising) | timestamp_custom(' %H:%M ') }}
+      icon_template: mdi:weather-sunset-up
+    nextsunset:
+      entity_id: sun.sun
+      friendly_name: 'Next Sunset'
+      value_template: >
+        {{ as_timestamp(states.sun.sun.attributes.next_setting) | timestamp_custom(' %H:%M ') }}
+      icon_template: mdi:weather-sunset-down

@@ -1,32 +1,30 @@
 # Example configuration.yaml entry
 default_config:
 
-zone:
-  - name: Travail Manon
-    latitude: !secret work_manon_latitude
-    longitude: !secret work_manon_longitude
-    radius: 200
-    icon: mdi:work
-  - name: Appart
-    latitude: !secret appart_latitude
-    longitude: !secret appart_longitude
-    radius: 200
-    icon: mdi:home
-    
+zone: !include zone.yaml
+group: !include groups.yaml
+automation: !include_dir_merge_list automations/
+script: !include_dir_merge_list scripts/
+sensor: !include sensor/sensor.yaml
+switch: !include switch.yaml
+input_boolean: !include sensor/input_boolean.yaml
+google_assistant: !include sensor/google.yaml
+device_tracker: !include sensor/device_tracker.yaml
+light: !include sensor/light.yaml
+scene: !include scene.yaml
+stream:
+python_script:
+discovery:
+frontend:
+  themes: !include_dir_merge_named themes/
+  
+
+
 http:
-  base_url: !secret base_url
   cors_allowed_origins:
     - !secret base_url
     - !secret domaine_url
     - https://cast.home-assistant.io
-
-group: !include groups.yaml
-automation: !include automations.yaml
-script: !include scripts.yaml
-scene: !include scene.yaml
-python_script:
-frontend:
-  themes: !include_dir_merge_named themes/
 
 tts:
   - platform: google_cloud
@@ -36,23 +34,6 @@ tts:
     speed: 0.75
     voice: fr-FR-Wavenet-A
 
-google_assistant:
-  project_id: !secret google_project_id 
-  service_account: !include google_tts.json
-  report_state: true
-  exposed_domains:
-    - camera
-  entity_config:
-    light.miroir_sdb_gauche:
-      name: Spot miroir gauche
-      aliases:
-        - MIROIR_GAUCHE_LIGHT
-        - SALLE_DE_BAIN_MIROIR_GAUCHE
-    light.miroir_sdb_droite:
-      name: Spot miroir droite
-      aliases:
-        - MIROIR_DROITE_LIGHT
-        - SALLE_DE_BAIN_MIROIR_DROITE
         
 telegram_bot:
   - platform: webhooks
@@ -61,20 +42,6 @@ telegram_bot:
     allowed_chat_ids:
       - !secret telegram_manon
       - !secret telegram_gautier
-
-device_tracker:
-  - platform: composite
-    name: NUT Gautier
-    time_as: device_or_local
-    require_movement: True
-    entity_id:
-      - binary_sensor.nut_tracker_gautier
-  - platform: composite
-    name: NUT Manon
-    time_as: device_or_local
-    require_movement: True
-    entity_id:
-      - binary_sensor.nut_tracker_manon
       
 media_player:
   # - platform: xboxone
@@ -98,6 +65,7 @@ yeelight:
   devices:
     192.168.2.19:
       name: Yeelight Cuisine
+      
 # linky:
 #   - username: !secret mail_gautier
 #      password: !secret linky_password
@@ -110,10 +78,6 @@ shelly:
 netatmo:
   client_id: !secret netatmo_client_id
   client_secret: !secret netatmo_client_secret
-  
-pi_hole:
-  - host: 192.168.2.17
-    api_key: !secret pi_hole_api_key
 
   
 vacuum:
@@ -125,9 +89,9 @@ spotify:
   client_id: !secret spotify_client_id
   client_secret: !secret spotify_client_secret
 
-spotcast:
-  username: !secret spotify_username
-  password: !secret spotify_password
+#spotcast:
+#  username: !secret spotify_username
+#  password: !secret spotify_password
 
 camera:
   - platform: foscam
@@ -136,127 +100,12 @@ camera:
     username: !secret foscam_username
     password: !secret foscam_password
     
-stream:  
 
 google:
   client_id: !secret google_client_id
   client_secret: !secret google_client_secret
 
-
-light:
-  - platform: xiaomi_miio
-    name: Miroir SDB Gauche
-    host: 192.168.2.231
-    token: !secret xiaomi_token_spot_gauche
-    model: philips.light.bulb
-  - platform: xiaomi_miio
-    name: Miroir SDB Droite
-    host: 192.168.2.26
-    token: !secret xiaomi_token_spot_droite
-    model: philips.light.bulb
     
-sensor:
-  - platform: linky_custom
-    username: !secret mail_gautier 
-    password: !secret linky_password
-    peak_hours:
-      - ["01:00", "07:30"]
-      - ["13:00", "14:30"]
-    peak_hours_cost: 0.1420
-    offpeak_hours_cost: 0.1420
-  - platform: spotify-playlist-sensor
-    client_id: !secret spotify_client_id_2
-    client_secret: !secret spotify_client_secret_2
-  - platform: mitemp_bt
-    rounding: True
-    decimals: 1
-    period: 300
-    log_spikes: False
-    use_median: True
-    active_scan: False
-    hci_interface: 1
-  - platform: time_date
-    display_options:
-      - 'time'
-      - 'date'
-      - 'date_time'
-      - 'time_date'
-  - platform: google_travel_time
-    scan_interval: 1200
-    api_key: !secret google_api_key
-    origin: 'Appart'
-    destination: 'Travail Gautier'
-    options:
-      language: fr
-  - platform: darksky
-    api_key: !secret dark_sky_api_key
-    scan_interval: 1200
-    language: 'fr'
-    forecast:
-      - 0
-    monitored_conditions:
-      - summary
-      - precip_probability
-      - apparent_temperature_high
-      - apparent_temperature_low
-  - platform: template
-    sensors:
-      nextsunrise:
-        entity_id: sun.sun
-        friendly_name: 'Next Sunrise'
-        value_template: >
-          {{ as_timestamp(states.sun.sun.attributes.next_rising) | timestamp_custom(' %H:%M ') }}
-        icon_template: mdi:weather-sunset-up
-      nextsunset:
-        entity_id: sun.sun
-        friendly_name: 'Next Sunset'
-        value_template: >
-          {{ as_timestamp(states.sun.sun.attributes.next_setting) | timestamp_custom(' %H:%M ') }}
-        icon_template: mdi:weather-sunset-down
-      
-input_boolean:
-  is_jour:
-    name: Mode Jour
-    initial: on
-    icon: mdi:weather-sunny
-  wc_motion_detection:
-    name: WC Motion Detection
-    initial: off
-  presence:
-    name: Présence
-    initial: on
-    
-switch:
-  platform: template
-  switches:
-    mode_jour:
-      value_template: >
-        {{ is_state('input_boolean.is_jour', 'on') }}
-      turn_on:
-        - service: input_boolean.turn_on
-          entity_id: input_boolean.is_jour
-      turn_off:
-        - service: input_boolean.turn_off
-          entity_id: input_boolean.is_jour
-    wc_motion_detection:
-      value_template: >
-        {{ is_state('input_boolean.wc_motion_detection', 'on') }}
-      turn_on:
-        - service: input_boolean.turn_on
-          entity_id: input_boolean.wc_motion_detection
-      turn_off:
-        - service: input_boolean.turn_off
-          entity_id: input_boolean.wc_motion_detection
-    presence:
-      value_template: >
-        {{ is_state('input_boolean.presence', 'on') }}
-      turn_on:
-        - service: input_boolean.turn_on
-          entity_id: input_boolean.presence
-      turn_off:
-        - service: input_boolean.turn_off
-          entity_id: input_boolean.presence
-                   
 weather:
   - platform: darksky
     api_key: !secret dark_sky_api_key

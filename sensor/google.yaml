@@ -1,0 +1,17 @@
+project_id: !secret google_project_id 
+service_account: !include google_tts.json
+report_state: true
+exposed_domains:
+  - camera
+  - sensor
+entity_config:
+  light.miroir_sdb_gauche:
+    name: Spot miroir gauche
+    aliases:
+      - MIROIR_GAUCHE_LIGHT
+      - SALLE_DE_BAIN_MIROIR_GAUCHE
+  light.miroir_sdb_droite:
+    name: Spot miroir droite
+    aliases:
+      - MIROIR_DROITE_LIGHT
+      - SALLE_DE_BAIN_MIROIR_DROITE

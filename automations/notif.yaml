@@ -1,0 +1,131 @@
+- id: daily_recap_manon
+  alias: Automation daily info manon
+  trigger:
+    platform: time
+    at: "07:30:00"
+  action:
+    - service: telegram_bot.send_message
+      data:
+        message: "<b>&#x1F44B;&#x1F3FC; Coucou ma Hey Oh ! &#x2764;&#xFE0F;</b>\n\n&#x1F321;&#xFE0F; Aujourd'hui il fera au maximum {{ states('sensor.dark_sky_daytime_high_apparent_temperature_0d') }}°C et au minimum {{ states('sensor.dark_sky_overnight_low_apparent_temperature_0d')}}°C &#x1F321;&#xFE0F;\n&#x1F324;&#xFE0F; Type de météo aujourd'hui : {{ states('sensor.dark_sky_summary_0d') }}&#x1F324;\n&#x2600; Levé du soleil : {{ states('sensor.nextsunrise') }}\n&#x1F319; Couché du soleil : {{ states('sensor.nextsunset')}}\n&#xFE0F;\n\n&#x1F47C;&#x1F3FB; Nous fêtons les : {{ states.calendar.fetes_des_prenoms.attributes.message }}"
+        target:
+          - 432161160
+
+- id: daily_recap_gautier
+  alias: Automation daily info Gautier
+  trigger:
+    platform: time
+    at: "7:30:00"
+  action:
+    - service: telegram_bot.send_message
+      data:
+        message: "<b> &#x1F44B; Salut Gautier ! &#x1F44B; </b>\n\n&#x1F321;&#xFE0F; Aujourd'hui il fera au maximum {{ states('sensor.dark_sky_daytime_high_apparent_temperature_0d') }}°C et au minimum {{ states('sensor.dark_sky_overnight_low_apparent_temperature_0d')}}°C &#x1F321;&#xFE0F;\n&#x1F324;&#xFE0F; Type de météo aujourd'hui : {{ states('sensor.dark_sky_summary_0d') }}&#x1F324;\n&#x2614;Chance de précipitation : {{ states('sensor.dark_sky_precip_probability_0d') }}%\n&#x2600; Levé du soleil : {{ states('sensor.nextsunrise') }}\n&#x1F319; Couché du soleil : {{ states('sensor.nextsunset')}}\n&#xFE0F;\n\n&#x1F47C;&#x1F3FB; Nous fêtons les : {{ states.calendar.fetes_des_prenoms.attributes.message }}"
+        target:
+          - 333243974
+          
+
+- id: trajet_travail_gautier
+  alias: Automation notifs trajet travail Gautier
+  trigger:
+    platform: state
+    entity_id: binary_sensor.door_entree
+    from: 'off'
+    to: 'on'
+  condition:
+    condition: time
+    after: '07:50:00'
+    before: '09:00:00'
+    weekday:
+      - mon
+      - tue
+      - wed
+      - thu
+      - fri
+  action:
+    - service: telegram_bot.send_message
+      data:
+        message: "&#x1F3CE; Domicile -> Travail : {{ states('sensor.google_travel_time_driving') }} minutes &#x1F3CD;"
+        target:
+          - 333243974
+          
+- id: porte_ouverte
+  alias: Automation notifs porte
+  trigger:
+    platform: state
+    entity_id: binary_sensor.door_entree
+    from: 'off'
+    to: 'on'
+  action:
+    - service: telegram_bot.send_message
+      data:
+        message: "&#x1F6AA; Porte d'entrée ouverte &#x1F6AA;"
+        target:
+          - 432161160
+          - 333243974
+
+- id: porte_ouverte_5_min
+  alias: Automation notifs porte
+  trigger:
+    platform: state
+    entity_id: binary_sensor.door_entree
+    to: 'on'
+    for:
+      minutes: 5
+  action:
+    - service: telegram_bot.send_message
+      data:
+        message: "&#x1F6AA; &#x1F6A8; Porte d'entrée ouverte depuis 5 minutes &#x1F6A8; &#x1F6AA;"
+        target:
+          - 432161160
+          - 333243974
+          
+- id: henry_end
+  alias: Automation notifs fin de nettoyage
+  trigger:
+    platform: state
+    entity_id: vacuum.xiaomi_vacuum_cleaner
+    # from: 'cleaning'
+    to: 'docked'
+  action:
+    - service: telegram_bot.send_message
+      data:
+        message: "&#x1F916; Henry a fini son nettoyage &#x1F916;"
+        target:
+          - 432161160
+          - 333243974
+
+
+
+#===============================================================================
+#================================= VOCAL========================================
+#===============================================================================
+
+
+- id: bienvenue_gautier
+  alias: Message accueil Gautier
+  trigger: 
+    platform: state
+    entity_id: person.gautier
+    to: 'home'
+    for: 
+      minutes: 0
+      seconds: 30
+  action: 
+    service: tts.google_cloud_say
+    entity_id: media_player.nesthub
+    data:
+      message: "Salut chef ! Comme d'habitude, salade, tomate, onion ?"
+      
+- id: bienvenue_manon
+  alias: Message accueil Manon
+  trigger: 
+    platform: state
+    entity_id: person.manon
+    to: 'home'
+    for: 
+      minutes: 0
+      seconds: 30
+  action: 
+    service: tts.google_cloud_say
+    entity_id: media_player.nesthub
+    data:
+      message: 'Coucou blablablu ! Met du coco et on demarre !'           

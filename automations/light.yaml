@@ -1,0 +1,102 @@
+- id: motion_detection_wc_on
+  alias: Automation Light WC On
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_wc
+    to: 'on'
+  action:
+    service: light.turn_on
+    data_template:
+      entity_id: light.wc
+      brightness: >-
+            {% if is_state('input_boolean.is_jour', 'on') %}
+              {{254 | int}}
+            {% else %}
+              {{40|int}}
+            {% endif %}
+
+      
+- id: motion_detection_wc_off
+  alias: Automation Light WC Off
+  trigger:
+    platform: state
+    entity_id: binary_sensor.motion_sensor_wc
+    from: 'on'
+    to: 'off'
+    for:
+      seconds: 30
+  action:
+    service: light.turn_off
+    data:
+      entity_id: light.wc
+
+      
+- id: WC_caca_start
+  alias: Automation WC caca start
+  trigger:
+    platform: state
+    entity_id: binary_sensor.door_wc
+    from: 'on'
+    to: 'off'
+  condition:
+    condition: state
+    entity_id: binary_sensor.motion_sensor_wc
+    state: 'on'
+  action:
+    - service: automation.turn_off
+      data:
+        entity_id: automation.automation_light_wc_off
+      
+- id: WC_caca_end
+  alias: Automation WC caca end
+  trigger:
+    platform: state
+    entity_id: binary_sensor.door_wc
+    from: 'off'
+    to: 'on'
+  action:
+    - service: light.turn_off
+      data:
+        entity_id: light.wc
+    - service: automation.turn_on
+      data:
+        entity_id: automation.automation_light_wc_off
+
+- id: spot_sdb_off
+  alias: Turn off spot sdb
+  trigger:
+    - platform: state
+      entity_id: light.sdb
+      from: 'on'
+      to: 'off'
+  action:
+   - service: light.turn_off
+     data:
+      entity_id: light.miroir_sdb_gauche
+   - service: light.turn_off
+     data:
+      entity_id: light.miroir_sdb_droite
+
+- id: pre_dodo
+  alias: Automation Pré-dodo
+  trigger:
+    - platform: event
+      event_type: xiaomi_aqara.click
+      event_data:
+        entity_id: binary_sensor.switch_gautier
+        click_type: single
+    - platform: event
+      event_type: xiaomi_aqara.click
+      event_data:
+        entity_id: binary_sensor.switch_manon
+        click_type: single
+  condition:
+      - condition: state
+        entity_id: input_boolean.is_jour
+        state: 'off'
+  action:
+    - service: light.turn_on
+      data:
+        entity_id: light.bandeau_lit
+        brightness: 100 
+    - service: script.turn_off_all_lights_expected_bedroom
