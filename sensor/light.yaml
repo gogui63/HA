@@ -1,0 +1,10 @@
+- platform: xiaomi_miio
+  name: Miroir SDB Gauche
+  host: 192.168.2.231
+  token: !secret xiaomi_token_spot_gauche
+  model: philips.light.bulb
+- platform: xiaomi_miio
+  name: Miroir SDB Droite
+  host: 192.168.2.26
+  token: !secret xiaomi_token_spot_droite
+  model: philips.light.bulb

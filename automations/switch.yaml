@@ -1,0 +1,27 @@
+- id: inter_double_salon_left
+  alias: inter salon gauche
+  trigger:
+    - platform: event
+      event_type: xiaomi_aqara.click
+      event_data:
+        entity_id: binary_sensor.wall_switch_left
+        click_type: single
+  action:
+    - service: light.toggle
+      data:
+        entity_id: light.salon
+
+- id: inter_double_salon_right
+  alias: inter salon gauche
+  trigger:
+    - platform: event
+      event_type: xiaomi_aqara.click
+      event_data:
+        entity_id: binary_sensor.wall_switch_right
+        click_type: single
+  action:
+    - service: light.toggle
+      data:
+        entity_id: 
+          - light.cuisine
+          - light.hall_entree

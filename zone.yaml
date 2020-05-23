@@ -1,0 +1,10 @@
+- name: Travail Manon
+  latitude: !secret work_manon_latitude
+  longitude: !secret work_manon_longitude
+  radius: 200
+  icon: mdi:work
+- name: Appart
+  latitude: !secret appart_latitude
+  longitude: !secret appart_longitude
+  radius: 200
+  icon: mdi:home

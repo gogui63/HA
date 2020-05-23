@@ -1,0 +1,25 @@
+- id: debug_nut_gautier
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.nut_tracker_gautier
+      from: 'on'
+      to: 'off'
+  action:
+    - service: telegram_bot.send_message
+      data:
+        message: "NUT Gautier absent" 
+        target:
+          - 333243974
+
+- id: debug_nut_manon
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.nut_tracker_manon
+      from: 'on'
+      to: 'off'
+  action:
+    - service: telegram_bot.send_message
+      data:
+        message: "NUT Manon absent" 
+        target:
+          - 333243974

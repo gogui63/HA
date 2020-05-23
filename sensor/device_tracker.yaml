@@ -1,0 +1,12 @@
+- platform: composite
+  name: NUT Gautier
+  time_as: device_or_local
+  require_movement: True
+  entity_id:
+    - binary_sensor.nut_tracker_gautier
+- platform: composite
+  name: NUT Manon
+  time_as: device_or_local
+  require_movement: True
+  entity_id:
+    - binary_sensor.nut_tracker_manon

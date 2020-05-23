@@ -1,0 +1,100 @@
+- id: mode_nuit
+  alias: Automation Mode Nuit
+  trigger:
+    - platform: event
+      event_type: xiaomi_aqara.click
+      event_data:
+        entity_id: binary_sensor.switch_gautier
+        click_type: single
+    - platform: event
+      event_type: xiaomi_aqara.click
+      event_data:
+        entity_id: binary_sensor.switch_manon
+        click_type: single
+  condition:
+      - condition: state
+        entity_id: input_boolean.is_jour
+        state: 'on'
+  action:
+    - service: light.turn_on
+      data:
+        entity_id: light.bandeau_lit
+        brightness: 255 
+    - service: script.turn_off_all_lights_expected_bedroom
+    - service: input_boolean.turn_off
+      data:
+        entity_id: input_boolean.is_jour
+      
+- id: mode_jour
+  alias: Automation Mode Jour
+  trigger:
+    platform: state
+    entity_id: cover.volet_chambre
+    to: 'open'
+  action:
+    service: input_boolean.turn_on
+    data:
+      entity_id: input_boolean.is_jour
+    
+      
+- id: mode_absence
+  alias: Automation Mode Absence
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.nut_tracker_gautier
+      from: 'on'
+      to: 'off'
+      for: 
+        minutes: 2
+    - platform: state
+      entity_id: binary_sensor.nut_tracker_manon
+      from: 'on'
+      to: 'off'
+      for: 
+        minutes: 2
+  condition:
+      condition: and
+      conditions:
+      - condition: state
+        entity_id: binary_sensor.nut_tracker_manon
+        state: 'off'
+      - condition: state
+        entity_id: binary_sensor.nut_tracker_gautier
+        state: 'off'
+  action:
+    - service: light.turn_off
+      data:
+       entity_id: all
+    - service: input_boolean.turn_off
+      data:
+        entity_id: input_boolean.presence
+
+- id: mode_presence
+  alias: Automation Mode Presence
+  trigger:
+    - platform: state
+      entity_id: binary_sensor.nut_tracker_manon
+      from: 'off'
+      to: 'on'
+      for: 
+        minutes: 2
+    - platform: state
+      entity_id: binary_sensor.nut_tracker_gautier
+      from: 'off'
+      to: 'on'
+      for: 
+        minutes: 2
+  condition:
+      condition: or
+      conditions:
+      - condition: state
+        entity_id: binary_sensor.nut_tracker_gautier
+        state: 'on'
+      - condition: state
+        entity_id: binary_sensor.nut_tracker_manon
+        state: 'on'
+  action:
+    - service: input_boolean.turn_on
+      data:
+        entity_id: input_boolean.presence
+        
